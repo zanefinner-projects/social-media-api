@@ -12,7 +12,10 @@ import (
 func main() {
 	fmt.Println("Server Start")
 	defer fmt.Println("Server End")
-	router := mux.NewRouter()
+	router := mux.NewRouter().
+		StrictSlash(true)
+
+	//Index Endpoint
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		//Route Guide
 		fmt.Fprintln(w, `Routes:`)
@@ -32,8 +35,23 @@ func main() {
 		fmt.Fprintln(w, ` | GET:      [ /posts/{id} ]   ➤   Singular Post Info`)
 		fmt.Fprintln(w, ` | DELETE:   [ /posts/{id} ]   ➤   Delete a Post`)
 		fmt.Fprintln(w, ` | PUT:      [ /posts/{id} ]   ➤   Modify a Post`)
+
+		fmt.Fprintln(w, `MULTIMEDIA`)
+		fmt.Fprintln(w, ` | POST:     [ /media      ]   ➤   Create Media`)
+		fmt.Fprintln(w, ` | GET:      [ /media      ]   ➤   List all Media`)
+		fmt.Fprintln(w, ` | GET:      [ /media/{id} ]   ➤   Serve Media File`)
+		fmt.Fprintln(w, ` | DELETE:   [ /media/{id} ]   ➤   Delete Media`)
+		fmt.Fprintln(w, ` | PUT:      [ /media/{id} ]   ➤   Modify Media`)
 	})
 
+	//Static Files
+	router.
+		PathPrefix("/media/"). //Will be activated with perms in the future
+		Handler(http.
+			StripPrefix("/media/", http.
+				FileServer(http.Dir("./media/"))))
+
+	//Server Setup
 	srv := &http.Server{
 		Handler: router,
 		Addr:    "127.0.0.1:8080",
@@ -42,5 +60,6 @@ func main() {
 		ReadTimeout:  15 * time.Second,
 	}
 
+	//Run Server
 	log.Fatal(srv.ListenAndServe())
 }
