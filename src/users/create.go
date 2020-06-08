@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/zanefinner-projects/social-media-api/src/config"
+	"golang.org/x/crypto/bcrypt"
 )
 
 //Create ...
@@ -29,10 +30,25 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, `{"err":`+`"`+string(err.Error())+`"`+`}`)
 		return
 	}
-	//See if creds are valid
-	//yes? -> add record
-	//no? -> send json of errors
-	fmt.Fprintln(w, `{"err":`+`"`+"Credentials aren't sufficient"+`"`+`}`)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(ud.Password), 8)
+	if err != nil {
+		fmt.Println(err)
+	}
+	validAndUnique := isValid(ud) && isUni(ud)
+	if validAndUnique {
+		db.Create(&config.User{Username: ud.Username, Password: string(hashedPassword)})
+		fmt.Fprintln(w, `{"created_user":`+`"`+"true"+`"`+`}`)
+	} else {
+		fmt.Fprintln(w, `{"err":`+`"`+"Credentials aren't sufficient"+`"`+`}`)
+		fmt.Fprintln(w, `{"created_user":`+`"`+"false"+`"`+`}`)
+	}
 	fmt.Println("Recieved->")
 	fmt.Println(string(body))
+}
+
+func isValid(creds UserDataForUserCreate) bool {
+	return true //more on it later
+}
+func isUni(creds UserDataForUserCreate) bool {
+	return true //more on it later
 }

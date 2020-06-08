@@ -1,11 +1,14 @@
 package config
 
+import "github.com/jinzhu/gorm"
+
 //User is the structure used to generate the sql tables
 type User struct {
+	gorm.Model
 	ID       uint   `json:"id" gorm:"primary_key"`
 	Username string `json:"username"`
 	Password string `json:"password"`
-	JoinedAt string `json:"joinedat"`
+	//JoinedAt string `json:"joinedat"`
 }
 
 //Upload is the structure used to generate the sql tables
