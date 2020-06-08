@@ -1,12 +1,14 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/zanefinner-projects/social-media-api/src/users"
 )
 
 func main() {
@@ -28,22 +30,44 @@ func main() {
 		fmt.Fprintln(w, ` | DELETE:   [ /users/{id} ]   ➤   Delete a User`)
 		fmt.Fprintln(w, ` | PUT:      [ /users/{id} ]   ➤   Modify a User`)
 		fmt.Fprintln(w, "")
-
 		fmt.Fprintln(w, `POSTS`)
 		fmt.Fprintln(w, ` | POST:     [ /posts      ]   ➤   Create Post`)
 		fmt.Fprintln(w, ` | GET:      [ /posts      ]   ➤   List all Posts`)
 		fmt.Fprintln(w, ` | GET:      [ /posts/{id} ]   ➤   Singular Post Info`)
 		fmt.Fprintln(w, ` | DELETE:   [ /posts/{id} ]   ➤   Delete a Post`)
 		fmt.Fprintln(w, ` | PUT:      [ /posts/{id} ]   ➤   Modify a Post`)
-
+		fmt.Fprintln(w, "")
 		fmt.Fprintln(w, `MULTIMEDIA`)
 		fmt.Fprintln(w, ` | POST:     [ /media      ]   ➤   Create Media`)
 		fmt.Fprintln(w, ` | GET:      [ /media      ]   ➤   List all Media`)
 		fmt.Fprintln(w, ` | GET:      [ /media/{id} ]   ➤   Serve Media File`)
 		fmt.Fprintln(w, ` | DELETE:   [ /media/{id} ]   ➤   Delete Media`)
 		fmt.Fprintln(w, ` | PUT:      [ /media/{id} ]   ➤   Modify Media`)
-	})
+		fmt.Fprintln(w, "")
+		fmt.Fprintln(w, `MISC`)
+		fmt.Fprintln(w, ` | ANY:      [ /echo/{msg} ]   ➤   Get a response base on your message`)
 
+	})
+	router.HandleFunc("/echo/{msg}", func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		//Msg ...
+		type msg struct {
+			Message string
+		}
+
+		recieved := msg{
+			Message: vars["msg"],
+		}
+
+		jsonResponse, err := json.Marshal(recieved)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		fmt.Println(string(jsonResponse))
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(jsonResponse)
+	})
 	//Static Files
 	router.
 		PathPrefix("/media/"). //Will be activated with perms in the future
@@ -51,6 +75,8 @@ func main() {
 			StripPrefix("/media/", http.
 				FileServer(http.Dir("./media/"))))
 
+	//User Routes
+	router.HandleFunc("/users", users.Create).Methods("POST")
 	//Server Setup
 	srv := &http.Server{
 		Handler: router,
