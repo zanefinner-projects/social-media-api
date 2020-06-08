@@ -10,5 +10,5 @@
 1. ~~Draft README~~
 2. ~~Draft routes~~
 3. ~~Configure and connect db~~
-4. Structure db using mysql
+4. ~~Structure db using mysql~~
 5. Save .sql files and dump in dedicated directory
