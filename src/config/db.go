@@ -11,6 +11,7 @@ import (
 func Migrate(uname, pword, dbname string) {
 	db, err := gorm.Open("mysql", uname+":"+pword+"@/"+dbname+"?charset=utf8&parseTime=True&loc=Local")
 	db.AutoMigrate(&User{})
+	db.AutoMigrate(&Upload{})
 	if err != nil {
 		log.Panic(err)
 	}
