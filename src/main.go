@@ -8,12 +8,13 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/zanefinner-projects/social-media-api/src/config"
 	"github.com/zanefinner-projects/social-media-api/src/users"
 )
 
 func main() {
 	fmt.Println("Server Start")
-	defer fmt.Println("Server End")
+	config.Migrate(config.GetDBCreds())
 	router := mux.NewRouter().
 		StrictSlash(true)
 
