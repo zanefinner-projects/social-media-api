@@ -5,12 +5,17 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/zanefinner-projects/social-media-api/src/config"
 )
 
 //Create ...
 func Create(w http.ResponseWriter, r *http.Request) {
 	defer fmt.Println("Create User Endpoint Hit")
 
+	db := config.ConnectDatabase(config.GetDBCreds())
+
+	fmt.Println(db) //can use db as gorm.DB as of now
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		panic(err)
