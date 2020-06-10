@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/zanefinner-projects/social-media-api/src/config"
+	"golang.org/x/crypto/bcrypt"
 )
 
 //GetToken ...
@@ -31,23 +32,24 @@ func GetToken(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("Recieved->")
 	fmt.Println(string(body))
-	//Match with db records
 
-	var token string
-	db.
-		Model(&config.User{}).
-		Where("username = ?", uc.Username).
-		Select("token").
-		Row().
-		Scan(&token)
+	var evidence config.User
 
-	if token != "" /*metch*/ {
-		fmt.Fprintln(w, `{"token":`+`"`+token+`"`+`}`)
+	db.Where(&config.User{Username: uc.Username}).Find(&config.User{}).Scan(&evidence)
+	err = bcrypt.CompareHashAndPassword([]byte(evidence.Password), []byte(uc.Password))
+	if err != nil {
+		fmt.Fprintln(w, `{"err":`+`"`+"Invalid login"+`"`+`}`)
+		fmt.Println(evidence)
+		fmt.Println(uc)
 	} else {
-		rstr := randomString(64)
-		fmt.Println(rstr)
-		fmt.Fprintln(w, `{"token":`+`"`+rstr+`"`+`}`)
-		//add rstr to assoc record
+		//account connected, push out token if exists
+		if evidence.Token != "" {
+			fmt.Fprintln(w, `{"token":`+`"`+evidence.Token+`"`+`}`)
+		} else {
+			rstr := randomString(64)
+			fmt.Println(rstr)
+			fmt.Fprintln(w, `{"token":`+`"`+rstr+`"`+`}`)
+		}
 	}
 }
 
