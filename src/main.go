@@ -78,6 +78,7 @@ func main() {
 
 	//User Routes
 	router.HandleFunc("/users", users.Create).Methods("POST")
+	router.HandleFunc("/users", users.GetToken).Methods("GET")
 	//Server Setup
 	srv := &http.Server{
 		Handler: router,

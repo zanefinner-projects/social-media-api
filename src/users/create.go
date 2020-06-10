@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/jinzhu/gorm"
 	"github.com/zanefinner-projects/social-media-api/src/config"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -16,10 +17,9 @@ func Create(w http.ResponseWriter, r *http.Request) {
 
 	db := config.ConnectDatabase(config.GetDBCreds())
 
-	fmt.Println(db) //can use db as gorm.DB as of now
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 	//To show json, use string(body). To use data, call from ud
 	var ud UserDataForUserCreate
@@ -34,7 +34,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	validAndUnique := isValid(ud) && isUni(ud)
+	validAndUnique := isUni(db, ud) && isValid(db, ud)
 	if validAndUnique {
 		db.Create(&config.User{Username: ud.Username, Password: string(hashedPassword)})
 		fmt.Fprintln(w, `{"created_user":`+`"`+"true"+`"`+`}`)
@@ -46,9 +46,19 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(string(body))
 }
 
-func isValid(creds UserDataForUserCreate) bool {
-	return true //more on it later
+func isValid(db *gorm.DB, creds UserDataForUserCreate) bool {
+	usernameOK := (len([]byte(creds.Username)) >= 4)
+	passwordOK := (len([]byte(creds.Password)) >= 6)
+	if usernameOK && passwordOK {
+		return true
+	}
+	return false
 }
-func isUni(creds UserDataForUserCreate) bool {
-	return true //more on it later
+func isUni(db *gorm.DB, creds UserDataForUserCreate) bool {
+	var evidence config.User
+	db.Where(&config.User{Username: creds.Username}).Find(&config.User{}).Scan(&evidence)
+	if evidence.ID == 0 {
+		return true
+	}
+	return false
 }
