@@ -48,6 +48,8 @@ func GetToken(w http.ResponseWriter, r *http.Request) {
 		} else {
 			rstr := randomString(64)
 			fmt.Println(rstr)
+			evidence.Token = rstr
+			db.Save(&evidence)
 			fmt.Fprintln(w, `{"token":`+`"`+rstr+`"`+`}`)
 		}
 	}
