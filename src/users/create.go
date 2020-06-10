@@ -13,6 +13,8 @@ import (
 
 //Create ...
 func Create(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
 	defer fmt.Println("Create User Endpoint Hit")
 
 	db := config.ConnectDatabase(config.GetDBCreds())
@@ -21,19 +23,19 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	//To show json, use string(body). To use data, call from ud
 	var ud UserDataForUserCreate
 	err = json.Unmarshal(body, &ud)
-	w.Header().Set("Content-Type", "application/json")
 	if err != nil {
 		go fmt.Println(err)
 		fmt.Fprintln(w, `{"err":`+`"`+string(err.Error())+`"`+`}`)
 		return
 	}
+
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(ud.Password), 8)
 	if err != nil {
 		fmt.Println(err)
 	}
+
 	validAndUnique := isUni(db, ud) && isValid(db, ud)
 	if validAndUnique {
 		db.Create(&config.User{Username: ud.Username, Password: string(hashedPassword)})
@@ -42,6 +44,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, `{"err":`+`"`+"Credentials aren't sufficient"+`"`+`}`)
 		fmt.Fprintln(w, `{"created_user":`+`"`+"false"+`"`+`}`)
 	}
+
 	fmt.Println("Recieved->")
 	fmt.Println(string(body))
 }

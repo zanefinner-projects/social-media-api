@@ -13,6 +13,8 @@ import (
 
 //GetToken ...
 func GetToken(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
 	defer fmt.Println("Get Token Endpoint Hit")
 
 	db := config.ConnectDatabase(config.GetDBCreds())
@@ -28,21 +30,24 @@ func GetToken(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	w.Header().Set("Content-Type", "application/json")
-
-	fmt.Println("Recieved->")
-	fmt.Println(string(body))
 
 	var evidence config.User
 
-	db.Where(&config.User{Username: uc.Username}).Find(&config.User{}).Scan(&evidence)
-	err = bcrypt.CompareHashAndPassword([]byte(evidence.Password), []byte(uc.Password))
+	db.
+		Where(&config.
+			User{Username: uc.Username}).
+		Find(&config.
+			User{}).
+		Scan(&evidence)
+
+	err = bcrypt.
+		CompareHashAndPassword([]byte(evidence.Password),
+			[]byte(uc.Password))
+
 	if err != nil {
 		fmt.Fprintln(w, `{"err":`+`"`+"Invalid login"+`"`+`}`)
-		fmt.Println(evidence)
-		fmt.Println(uc)
 	} else {
-		//account connected, push out token if exists
+		
 		if evidence.Token != "" {
 			fmt.Fprintln(w, `{"token":`+`"`+evidence.Token+`"`+`}`)
 		} else {
