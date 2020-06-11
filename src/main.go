@@ -20,7 +20,7 @@ func main() {
 		StrictSlash(true)
 
 	//Index Endpoint
-	router.HandleFunc("/", showAllRoutes)
+	router.HandleFunc("/", documentation)
 	router.
 		HandleFunc("/echo/{msg}", func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
@@ -78,32 +78,7 @@ func main() {
 	log.Fatal(srv.ListenAndServe())
 }
 
-func showAllRoutes(w http.ResponseWriter, r *http.Request) {
-	//Route Guide
-	fmt.Fprintln(w, `Routes:`)
-	fmt.Fprintln(w, "")
-	fmt.Fprintln(w, `USERS`)
-	fmt.Fprintln(w, ` | ANY:      [ /           ]   ➤   Route List`)
-	fmt.Fprintln(w, ` | POST:     [ /users      ]   ➤   Create User`)
-	fmt.Fprintln(w, ` | GET:      [ /users      ]   ➤   List all Users`)
-	fmt.Fprintln(w, ` | GET:      [ /users/{id} ]   ➤   Singular User Info`)
-	fmt.Fprintln(w, ` | DELETE:   [ /users/{id} ]   ➤   Delete a User`)
-	fmt.Fprintln(w, ` | PUT:      [ /users/{id} ]   ➤   Modify a User`)
-	fmt.Fprintln(w, "")
-	fmt.Fprintln(w, `POSTS`)
-	fmt.Fprintln(w, ` | POST:     [ /posts      ]   ➤   Create Post`)
-	fmt.Fprintln(w, ` | GET:      [ /posts      ]   ➤   List all Posts`)
-	fmt.Fprintln(w, ` | GET:      [ /posts/{id} ]   ➤   Singular Post Info`)
-	fmt.Fprintln(w, ` | DELETE:   [ /posts/{id} ]   ➤   Delete a Post`)
-	fmt.Fprintln(w, ` | PUT:      [ /posts/{id} ]   ➤   Modify a Post`)
-	fmt.Fprintln(w, "")
-	fmt.Fprintln(w, `MULTIMEDIA`)
-	fmt.Fprintln(w, ` | POST:     [ /media      ]   ➤   Create Media`)
-	fmt.Fprintln(w, ` | GET:      [ /media      ]   ➤   List all Media`)
-	fmt.Fprintln(w, ` | GET:      [ /media/{id} ]   ➤   Serve Media File`)
-	fmt.Fprintln(w, ` | DELETE:   [ /media/{id} ]   ➤   Delete Media`)
-	fmt.Fprintln(w, ` | PUT:      [ /media/{id} ]   ➤   Modify Media`)
-	fmt.Fprintln(w, "")
-	fmt.Fprintln(w, `MISC`)
-	fmt.Fprintln(w, ` | ANY:      [ /echo/{msg} ]   ➤   Get a response base on your message`)
+func documentation(w http.ResponseWriter, r *http.Request) {
+	//Redirect to GITHUB page!
+	http.Redirect(w, r, "https://github.com/zanefinner-projects/social-media-api", 301)
 }
