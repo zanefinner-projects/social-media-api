@@ -13,9 +13,10 @@ type User struct {
 
 //Upload is the structure used to generate the sql tables
 type Upload struct {
-	ID         uint   `json:"id" gorm:"primary_key"`
+	gorm.Model
 	Slug       string `json:"slug"`
 	FileType   string `json:"filetype"`
-	UploadedAt string `json:"uploadedat"`
 	Visibility string `json:"visibility"`
+	Content    string `json:"content"`
+	Source     string `json:"source"`
 }

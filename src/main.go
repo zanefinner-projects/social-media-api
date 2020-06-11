@@ -9,6 +9,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/zanefinner-projects/social-media-api/src/config"
+	"github.com/zanefinner-projects/social-media-api/src/posts"
 	"github.com/zanefinner-projects/social-media-api/src/users"
 )
 
@@ -58,6 +59,9 @@ func main() {
 	router.HandleFunc("/users", users.GetToken).
 		Methods("GET")
 
+	//Post Routers
+	router.HandleFunc("/posts", posts.Create).
+		Methods("POST")
 	//Server Setup
 	srv := &http.Server{
 		Handler: router,
