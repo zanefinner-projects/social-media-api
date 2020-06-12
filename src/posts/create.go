@@ -25,17 +25,43 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	var pd UserAuth
 	err = json.Unmarshal(body, &pd)
 	if err != nil {
-		go fmt.Println(err)
-		fmt.Fprintln(w, `{"err":`+`"`+string(err.Error())+`"`+`}`)
+		result := &config.ResponseOk{
+			Err: err.Error(),
+			Ok:  "no",
+		}
+		resultJSON, err := json.Marshal(result)
+		if err != nil {
+			return
+		}
+		fmt.Fprintln(w, string(resultJSON))
 		return
 	}
 
 	matched := match(db, pd)
 	if matched {
 		db.Create(&config.Upload{Slug: "", FileType: "nofile", Visibility: "public", Content: pd.Content, Source: pd.Username})
-		fmt.Fprintln(w, `{"created_post":`+`"`+"true"+`"`+`}`)
+		result := &config.ResponsePost{
+			Action: "Post created",
+			//ID       : find id
+			Source: pd.Username,
+			Ok:     "yes",
+			//Time get the time
+		}
+		resultJSON, err := json.Marshal(result)
+		if err != nil {
+			return
+		}
+		fmt.Fprintln(w, string(resultJSON))
 	} else {
-		fmt.Fprintln(w, `{"err":`+`"`+"Account not authorized"+`"`+`}`)
+		result := &config.ResponseOk{
+			Ok:  "no",
+			Err: "Invalid credentials",
+		}
+		resultJSON, err := json.Marshal(result)
+		if err != nil {
+			return
+		}
+		fmt.Fprintln(w, string(resultJSON))
 	}
 }
 

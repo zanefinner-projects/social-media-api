@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"net/http"
-	"strconv"
 
 	"github.com/zanefinner-projects/social-media-api/src/config"
 	"golang.org/x/crypto/bcrypt"
@@ -46,20 +45,48 @@ func GetToken(w http.ResponseWriter, r *http.Request) {
 			[]byte(uc.Password))
 
 	if err != nil {
-		fmt.Fprintln(w, `{"err":`+`"`+"Invalid login"+`"`+`}`)
+		result := &config.ResponseOk{
+			Err: "Credentials do not match any account",
+			Ok:  "no",
+		}
+		resultJSON, err := json.Marshal(result)
+		if err != nil {
+			return
+		}
+		fmt.Fprintln(w, string(resultJSON))
 	} else {
 
 		if evidence.Token != "" {
-			fmt.Fprintln(w, `{"token":`+`"`+evidence.Token+`",`)
-			fmt.Fprintln(w, `"ID":`+`"`+strconv.FormatUint(uint64(evidence.ID), 10)+`"`+`}`)
+			result := &config.ResponseUser{
+				Action: "Grab Token",
+				//ID:       string(evidence.ID), need to convert from uint
+				Username: evidence.Username,
+				Token:    evidence.Token,
+				Ok:       "yes",
+			}
+			resultJSON, err := json.Marshal(result)
+			if err != nil {
+				return
+			}
+			fmt.Fprintln(w, string(resultJSON))
 
 		} else {
 			rstr := randomString(64)
 			fmt.Println(rstr)
 			evidence.Token = rstr
 			db.Save(&evidence)
-			fmt.Fprintln(w, `{"token":`+`"`+rstr+`"`+`}`)
-			fmt.Fprintln(w, `{"ID":`+`"`+string(evidence.ID)+`"`+`}`)
+			result := &config.ResponseUser{
+				Action: "Create Token",
+				//ID:       string(evidence.ID), need to convert from uint
+				Username: evidence.Username,
+				Token:    rstr,
+				Ok:       "yes",
+			}
+			resultJSON, err := json.Marshal(result)
+			if err != nil {
+				return
+			}
+			fmt.Fprintln(w, string(resultJSON))
 		}
 	}
 }

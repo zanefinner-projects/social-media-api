@@ -39,10 +39,19 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	validAndUnique := isUni(db, ud) && isValid(db, ud)
 	if validAndUnique {
 		db.Create(&config.User{Username: ud.Username, Password: string(hashedPassword)})
-		fmt.Fprintln(w, `{"created_user":`+`"`+"true"+`"`+`}`)
+		result := &config.ResponseOk{Ok: "yes"}
+		resultJSON, err := json.Marshal(result)
+		if err != nil {
+			return
+		}
+		fmt.Fprintln(w, string(resultJSON))
 	} else {
-		fmt.Fprintln(w, `{"err":`+`"`+"Credentials aren't sufficient"+`"`+`}`)
-		fmt.Fprintln(w, `{"created_user":`+`"`+"false"+`"`+`}`)
+		result := &config.ResponseOk{Ok: "no", Err: "Credentials aren't unique and valid"}
+		resultJSON, err := json.Marshal(result)
+		if err != nil {
+			return
+		}
+		fmt.Fprintln(w, string(resultJSON))
 	}
 
 	fmt.Println("Recieved->")

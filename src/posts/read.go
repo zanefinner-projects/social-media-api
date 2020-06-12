@@ -26,10 +26,17 @@ func Read(w http.ResponseWriter, r *http.Request) {
 	}
 	var evidence config.Upload
 	db.First(&config.Upload{}, current.ID).Scan(&evidence)
-	jsonResponse, err := json.Marshal(evidence)
+	result := &config.ResponsePost{
+		Action: "Post retrieved via ID",
+		ID:     evidence.ID,
+		Source: evidence.Source,
+		Ok:     "yes",
+		Time:   evidence.CreatedAt,
+	}
+	resultJSON, err := json.Marshal(result)
 	if err != nil {
 		return
 	}
-	fmt.Fprintln(w, string(jsonResponse))
+	fmt.Fprintln(w, string(resultJSON))
 
 }
