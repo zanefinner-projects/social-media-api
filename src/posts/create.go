@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/jinzhu/gorm"
 	"github.com/zanefinner-projects/social-media-api/src/config"
 )
 
@@ -39,13 +38,16 @@ func Create(w http.ResponseWriter, r *http.Request) {
 
 	matched := match(db, pd)
 	if matched {
-		db.Create(&config.Upload{Slug: "", FileType: "nofile", Visibility: "public", Content: pd.Content, Source: pd.Username})
+		instance := config.Upload{
+			Slug: "", FileType: "nofile", Visibility: "public", Content: pd.Content, Source: pd.Username,
+		}
+		db.Save(&instance)
 		result := &config.ResponsePost{
-			Action: "Post created",
-			//ID       : find id
-			Source: pd.Username,
-			Ok:     "yes",
-			//Time get the time
+			Action:  "Post created",
+			ID:      instance.ID,
+			Source:  pd.Username,
+			Ok:      "yes",
+			Content: instance.Content,
 		}
 		resultJSON, err := json.Marshal(result)
 		if err != nil {
@@ -63,13 +65,4 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		}
 		fmt.Fprintln(w, string(resultJSON))
 	}
-}
-
-func match(db *gorm.DB, creds UserAuth) bool {
-	var evidence config.User
-	db.Where(&config.User{Username: creds.Username}).Find(&config.User{}).Scan(&evidence)
-	if creds.Username == evidence.Username && creds.Token == evidence.Token {
-		return true
-	}
-	return false
 }

@@ -64,11 +64,16 @@ func main() {
 		Methods("POST")
 	router.HandleFunc("/posts/{id}", posts.Read).
 		Methods("GET")
+	router.HandleFunc("/posts/{id}", posts.Delete).
+		Methods("DELETE")
+	router.HandleFunc("/posts/{id}", posts.Mod).
+		Methods("PUT")
 	//Will have filtering routes later on. Ex: GET: /posts/bydate/recent "{'limit':'5'}"
 	//Server Setup
 	srv := &http.Server{
 		Handler: router,
 		Addr:    "127.0.0.1:8080",
+
 		// Good practice: enforce timeouts for servers you create!
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
@@ -82,3 +87,4 @@ func documentation(w http.ResponseWriter, r *http.Request) {
 	//Redirect to GITHUB page!
 	http.Redirect(w, r, "https://github.com/zanefinner-projects/social-media-api", 301)
 }
+	
