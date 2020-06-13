@@ -15,12 +15,13 @@ type ResponseUser struct {
 
 //ResponsePost returns a response to be unarshalled into valid json
 type ResponsePost struct {
-	Action string `json:"action"`
-	ID     uint
-	Source string    `json:"source"`
-	Err    string    `json:"err"`
-	Ok     string    `json:"ok"`
-	Time   time.Time `json:"time"`
+	Action  string `json:"action"`
+	ID      uint
+	Source  string    `json:"source"`
+	Err     string    `json:"err"`
+	Ok      string    `json:"ok"`
+	Time    time.Time `json:"time"`
+	Content string    `json:"content"`
 }
 
 //ResponseOk returns a response that says yes/no based on errors
