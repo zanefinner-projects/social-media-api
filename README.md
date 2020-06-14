@@ -4,6 +4,6 @@ This is an api written in golang. It can be used on any platform, including Andr
 ## How to use this
 Refer to [OfficialDocs.pdf]
 
-##Can I just take this and use it as I please?
+## Can I just take this and use it as I please?
 Yes, you can. This is just a project to demonstrate my abilities to future employers, so feel free to refer to or use this in its entirety
 
