@@ -15,8 +15,8 @@ type User struct {
 type Upload struct {
 	gorm.Model
 	Slug       string `json:"slug"`
+	Username   string `json:"username"`
 	FileType   string `json:"filetype"`
 	Visibility string `json:"visibility"`
 	Content    string `json:"content"`
-	Source     string `json:"source"`
 }

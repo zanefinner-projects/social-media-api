@@ -45,8 +45,14 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 		example := upload{
 			ID: vars["id"],
 		}
-
-		db.Unscoped().Delete(&example)
+		var compExamp config.Upload
+		compExamp.Username = pd.Username
+		db.Model(&config.Upload{}).Where("username = ? and id = ?", compExamp.Username, example.ID).Scan(&compExamp) //set all in compExamp
+		if compExamp.ID == 0 {
+			//fail
+		} else {
+			db.Unscoped().Delete(&example)
+		}
 	} else {
 		result := &config.ResponseOk{
 			Ok:  "no",

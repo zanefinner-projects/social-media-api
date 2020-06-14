@@ -59,15 +59,13 @@ func main() {
 	router.HandleFunc("/users", users.GetToken).
 		Methods("GET")
 
-	//Post Routers
+		//Post Routers
 	router.HandleFunc("/posts", posts.Create).
 		Methods("POST")
 	router.HandleFunc("/posts/{id}", posts.Read).
 		Methods("GET")
 	router.HandleFunc("/posts/{id}", posts.Delete).
 		Methods("DELETE")
-	router.HandleFunc("/posts/{id}", posts.Mod).
-		Methods("PUT")
 	//Will have filtering routes later on. Ex: GET: /posts/bydate/recent "{'limit':'5'}"
 	//Server Setup
 	srv := &http.Server{

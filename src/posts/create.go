@@ -39,15 +39,15 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	matched := match(db, pd)
 	if matched {
 		instance := config.Upload{
-			Slug: "", FileType: "nofile", Visibility: "public", Content: pd.Content, Source: pd.Username,
+			Slug: "", FileType: "nofile", Visibility: "public", Content: pd.Content, Username: pd.Username,
 		}
 		db.Save(&instance)
 		result := &config.ResponsePost{
-			Action:  "Post created",
-			ID:      instance.ID,
-			Source:  pd.Username,
-			Ok:      "yes",
-			Content: instance.Content,
+			Action:   "Post created",
+			ID:       instance.ID,
+			Username: pd.Username,
+			Ok:       "yes",
+			Content:  instance.Content,
 		}
 		resultJSON, err := json.Marshal(result)
 		if err != nil {
