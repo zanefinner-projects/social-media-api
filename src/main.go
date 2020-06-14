@@ -48,10 +48,10 @@ func main() {
 
 	//Static Files
 	router.
-		PathPrefix("/media/"). //Will be activated with perms in the future
+		PathPrefix("/static/"). //Will be activated with perms in the future
 		Handler(http.
-			StripPrefix("/media/", http.
-				FileServer(http.Dir("./media/"))))
+			StripPrefix("/static/", http.
+				FileServer(http.Dir("./static/"))))
 
 	//User Routes
 	router.HandleFunc("/users", users.Create).
@@ -87,4 +87,3 @@ func documentation(w http.ResponseWriter, r *http.Request) {
 	//Redirect to GITHUB page!
 	http.Redirect(w, r, "https://github.com/zanefinner-projects/social-media-api", 301)
 }
-	
