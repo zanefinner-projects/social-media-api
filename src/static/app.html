@@ -5,12 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>App</title>
     <style>
-        /*css*/
+        html, body{
+            margin: 0; padding: 0;
+        }
+        .navbar{
+            position: relative;
+            top: 0;
+            left: 0;
+            height: 40px;
+            width: 100%;
+            background-color: rgb(40,40,40);
+        }
+        .navbar * {
+            font-size: 20px;
+            line-height: 40px;
+            color: white;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        .content{
+            position: relative;
+            height: auto;
+            width: 100%;
+            padding: 10px;
+            border-bottom: 1px solid rgb(222, 222, 222);
+        }
+        .forms{
+            position: fixed;
+            top: 40px;
+            left: 0;
+            width: 100%;
+            padding: 0;
+            
+            bottom: 0;
+            background-color: rgb(40,40,40);
+        }
+        .forms input {  
+            margin-top: 10px;
+        }
+        .forms button {  
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="app">
-        <div class="content"></div>
+        <div class="navbar"><span>Hello</span></div>
+        <div class="content">Loading</div>
     </div>
 </body>
     <script>
@@ -21,15 +62,54 @@
             }
         }
         var forms = {
-            login: "<form><input/></form>"
+            login: `
+            <form class='forms'>
+                <input/ name="uname" placeholder="Username">    <br>
+                <input/ name="pword" type="password" placeholder="Password"><br>
+                <button type="submit">Log in</button>
+                </form>
+            `
         }
         var actions = {
-            login: ()=>{components.app.content[0].innerHTML = forms.login}
+            login: {
+                present: ()=>{components.app.content[0].innerHTML = forms.login},
+                process: null
+            }
+        }
+
+
+        function setCookie(name,value,days) {
+            var expires = "";
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days*24*60*60*1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+        }
+        function getCookie(name) {
+            var nameEQ = name + "=";
+            var ca = document.cookie.split(';');
+            for(var i=0;i < ca.length;i++) {
+                var c = ca[i];
+                while (c.charAt(0)==' ') c = c.substring(1,c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+            }
+            return null;
+        }
+        function eraseCookie(name) {   
+            document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
         }
 
         function main(){
-            console.log(`start`);
-            actions.login()
-        }   document.onload = main();
+            if(getCookie("logged")=="in")
+            {
+                actions.login.present()
+                //try login inf
+            }else{
+
+            }
+        }   
+        document.onload = main();
     </script>
 </html>
