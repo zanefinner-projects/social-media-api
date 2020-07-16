@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>App</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
     <style>
         html, body{
             margin: 0; padding: 0;
@@ -51,7 +52,6 @@
 <body>
     <div class="app">
         <div class="navbar"><span>Hello</span></div>
-        <div class="content">Loading</div>
     </div>
 </body>
     <script>
@@ -59,6 +59,13 @@
             app: {
                 title: document.getElementById(`title`),
                 content: document.getElementsByClassName(`content`),
+                contentData: [
+                    "<h3>Name Here</h3><p>Hello, world hello. World? Hello!",
+                    "<h3>Name Here</h3><p>Hello, world hello. World? Hello!",
+                    "<h3>Name Here</h3><p>Hello, world hello. World? Hello!",
+                    "<h3>Name Here</h3><p>Hello, world hello. World? Hello!",
+                    "<h3>Name Here</h3><p>Hello, world hello. World? Hello!",
+                ]
             }
         }
         var forms = {
@@ -104,10 +111,19 @@
         function main(){
             if(getCookie("logged")=="in")
             {
-                actions.login.present()
+                //actions.login.present()
                 //try login inf
             }else{
 
+            }
+            contentNum = components.app.contentData.length
+            for (var i = 0; i<contentNum; i++)
+            {
+                var para = document.createElement("div");    
+                para.className = "content"                   
+                var t = components.app.contentData[i];      
+                para.innerHTML = t;                                
+                document.getElementsByClassName("app")[0].appendChild(para);    
             }
         }   
         document.onload = main();
