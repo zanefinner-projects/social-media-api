@@ -17,7 +17,7 @@ func main() {
 	fmt.Println("Server Start")
 	config.Migrate(config.GetDBCreds())
 	router := mux.NewRouter().
-		StrictSlash(true)
+		StrictSlash(false)
 
 	//Index Endpoint
 	router.HandleFunc("/", documentation)
