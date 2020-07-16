@@ -1,1 +1,35 @@
-You can put the single-page application here
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App</title>
+    <style>
+        /*css*/
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="content"></div>
+    </div>
+</body>
+    <script>
+        var components = {
+            app: {
+                title: document.getElementById(`title`),
+                content: document.getElementsByClassName(`content`),
+            }
+        }
+        var forms = {
+            login: "<form><input/></form>"
+        }
+        var actions = {
+            login: ()=>{components.app.content[0].innerHTML = forms.login}
+        }
+
+        function main(){
+            console.log(`start`);
+            actions.login()
+        }   document.onload = main();
+    </script>
+</html>
